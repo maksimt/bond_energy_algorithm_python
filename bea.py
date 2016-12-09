@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 
-def BEA(S):
+def BEA(S, transitive_similarity=False):
     """
     Order the columns of S to maximize the similarity between
         neighboring columns
     
     :param S - n*n similarity matrix
+    :param transitive_similarity - [False by default] consider neighbor's 
+        neighbors, etc, in calculating the similarity score.
     """
     
     n = S.shape[0]
@@ -22,19 +24,28 @@ def BEA(S):
             
             #bond energy contributed from from O[p-1]---i
             if p>=1:
-                bond_left = 2*S[O[p-1], i]
+                if transitive_similarity:
+                    bond_left = 2*np.inner(S[:,O[p-1]], S[:, i])
+                else:
+                    bond_left = 2*S[O[p-1], i]
             else:
                 bond_left = 0
             
             #bond energy contributed from i---O[p]
             if p<(n_pos-1):
-                bond_right = 2*S[O[p], i]
+                if transitive_similarity:
+                    bond_right = 2*np.inner(S[:, O[p]], S[:, i])
+                else:
+                    bond_right = 2*S[O[p], i]
             else:
                 bond_right = 0
                 
             #bond energy lost from O[p-1]---O[p]
             if p<(n_pos-1) and p>=1:
-                bond_mid = 2*S[O[p-1], O[p]]
+                if transitive_similarity:
+                    bond_mid = 2*np.inner(S[:, O[p-1]], S[:, O[p]])
+                else:
+                    bond_mid = 2*S[O[p-1], O[p]]
             else:
                 bond_mid = 0
             
