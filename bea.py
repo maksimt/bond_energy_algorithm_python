@@ -52,9 +52,6 @@ def BEA(S, transitive_similarity=False):
             bondstr[p] = bond_left + bond_right - bond_mid
         
         max_pos = np.argmax(bondstr)
-        #_O = O[0:max_pos].append([i])
-        #import pdb; pdb.set_trace()
-        #O = np.vstack((_O,O[(max_pos-1):-1]))
         P=np.zeros((n_pos,))
         P[0:max_pos]=O[0:max_pos]
         P[max_pos]=i
